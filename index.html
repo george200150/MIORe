@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="MIORe is comparable to previous works; the real-world motion is adapted to yield about the same optical flow. VAR-MIORe expands the state of knowledge by going from static to 0.25 seconds of exposure in diverse situations ranging from indoors to highway.">
+  <meta name="keywords" content="MIORe, VAR-MIORe, Restoration, Motion Blur, Interpolation, Optical Flow, Variable, High FPS">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MIORe & VAR-MIORe: Benchmarks to Push the Boundaries of Restoration</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/logo.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<div id="slots" class="display"></div>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            MIORe & VAR-MIORe: Benchmarks to Push the Boundaries of Restoration
+          </h1>
+          <h2 class="is-size-3 publication-venue">
+            <span class="author-block">International Conference on Computer Vision (ICCV 2025)</span>
+          </h2>
+
+          <div class="is-size-4 publication-authors">
+            <span class="author-block">George Ciubotariu</span>,
+            <span class="author-block">Zhuyun Zhou</span>,
+            <span class="author-block">Zongwei Wu</span>,
+            <span class="author-block">Radu Timofte</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">University of Würzburg</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://openaccess.thecvf.com/content/ICCV2025/papers/Ciubotariu_MIORe__VAR-MIORe_Benchmarks_to_Push_the_Boundaries_of_Restoration_ICCV_2025_paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://openaccess.thecvf.com/content/ICCV2025/supplemental/Ciubotariu_MIORe__VAR-MIORe_ICCV_2025_supplemental.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Supplementary</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/george200150/MIORe"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://github.com/george200150/MIORe"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="container is-max-desktop">
+    <!-- Animation. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <!-- Interpolating. -->
+        <div class="column interpolation-video-column">
+          <div id="interpolation-image-wrapper">
+            Loading...
+          </div>
+          <input class="slider is-fullwidth is-large is-info"
+                 id="interpolation-slider"
+                 step="1" min="0" max="100" value="0" type="range">
+        </div>
+        <div class="content has-text-centered">
+          <h5>
+            Use the slider to set the blur intensity!
+            In our dataset, VAR-MIORe, we generate blur ranging from 1/1000 to 1/25 seconds of exposure time.
+          </h5>
+        </div>
+      </div>
+    </div><br/>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We introduce MIORe and VAR-MIORe, two novel multi-task datasets that address critical limitations in current motion restoration benchmarks. Designed with high-frame-rate (1000 FPS) acquisition and professionalgrade optics, our datasets capture a broad spectrum of motion scenarios, which include complex ego-camera movements, dynamic multi-subject interactions, and depthdependent blur effects. By adaptively averaging frames based on computed optical flow metrics, MIORe generates consistent motion blur, and preserves sharp inputs for video frame interpolation and optical flow estimation. VAR-MIORe further extends by spanning a variable range of motion magnitudes, from minimal to extreme, establishing the first benchmark to offer explicit control over motion amplitude. We provide high-resolution, scalable ground truths that challenge existing algorithms under both controlled and adverse conditions, paving the way for next-generation research of various image and video restoration tasks.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div class="content has-text-centered">
+          <h4>
+            Examples of variable amplitude blur rendering from VAR-MIORe, swipe to see more!
+          </h4>
+      </div>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-deer">
+          <video poster="" id="deer" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/deer.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-crosswalk">
+          <video poster="" id="crosswalk" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/crosswalk.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-bridge">
+          <video poster="" id="bridge" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/bridge.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-cars">
+          <video poster="" id="cars" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/cars.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-cars2">
+          <video poster="" id="cars2" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/cars2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-cars3">
+          <video poster="" id="cars3" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/cars3.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-crosswalk2">
+          <video poster="" id="crosswalk2" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/crosswalk2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-goat">
+          <video poster="" id="goat" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/goat.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-lake">
+          <video poster="" id="lake" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/lake.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-crosswalk">
+          <video poster="" id="crosswalk" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/crosswalk.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-pigons">
+          <video poster="" id="pigons" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/pigons.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-playground">
+          <video poster="" id="playground" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/playground.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-river">
+          <video poster="" id="river" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/river.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-street">
+          <video poster="" id="street" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/street.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-waterfall">
+          <video poster="" id="waterfall" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/waterfall.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-zebra">
+          <video poster="" id="zebra" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/zebra.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+    <div class="hero-body">
+        <!-- Dataset. -->
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+                <h2 class="title is-3">Dataset</h2>
+                <div class="content has-text-centered">
+                    <h5>
+                        The MIORe and VAR-MIORe datasets were collected using the Chronos 2.1-HD from Kron Technologies, paired with multiple lenses.
+                    </h5>
+                    <h6>
+                        The diverse scenarios help us leverage naturally occurring differences in motion amplitude and patterns.
+                    </h6>
+                </div>
+                <div id="animal-carousel" class="dcarousel dataset-carousel">
+                    <div class="item item-animal-1">
+                        <img src="./static/images/dataset/mouflon_1.png" alt="Animal; Aggregated Images: 1">
+                    </div>
+                    <div class="item item-animal-25">
+                        <img src="./static/images/dataset/mouflon_25.png" alt="Animal; Aggregated Images: 25">
+                    </div>
+                    <div class="item item-animal-49">
+                        <img src="./static/images/dataset/mouflon_49.png" alt="Animal; Aggregated Images: 49">
+                    </div>
+                    <div class="item item-animal-73">
+                        <img src="./static/images/dataset/mouflon_73.png" alt="Animal; Aggregated Images: 73">
+                    </div>
+                    <div class="item item-animal-97">
+                        <img src="./static/images/dataset/mouflon_97.png" alt="Animal; Aggregated Images: 97">
+                    </div>
+                    <div class="item item-animal-121">
+                        <img src="./static/images/dataset/mouflon_121.png" alt="Animal; Aggregated Images: 121">
+                    </div>
+                    <div class="item item-animal-145">
+                        <img src="./static/images/dataset/mouflon_145.png" alt="Animal; Aggregated Images: 145">
+                    </div>
+                    <div class="item item-animal-169">
+                        <img src="./static/images/dataset/mouflon_169.png" alt="Animal; Aggregated Images: 169">
+                    </div>
+                    <div class="item item-animal-193">
+                        <img src="./static/images/dataset/mouflon_193.png" alt="Animal; Aggregated Images: 193">
+                    </div>
+                    <div class="item item-animal-217">
+                        <img src="./static/images/dataset/mouflon_217.png" alt="Animal; Aggregated Images: 217">
+                    </div>
+                    <div class="item item-animal-241">
+                        <img src="./static/images/dataset/mouflon_241.png" alt="Animal; Aggregated Images: 241">
+                    </div>
+                    <div class="item item-animal-249">
+                        <img src="./static/images/dataset/mouflon_249.png" alt="Animal; Aggregated Images: 249">
+                    </div>
+                </div>
+                <div id="airplane-carousel" class="dcarousel dataset-carousel">
+                    <div class="item item-plane-1">
+                        <img src="./static/images/dataset/plane_1.png" alt="Plane; Aggregated Images: 1">
+                    </div>
+                    <div class="item item-plane-25">
+                        <img src="./static/images/dataset/plane_25.png" alt="Plane; Aggregated Images: 25">
+                    </div>
+                    <div class="item item-plane-49">
+                        <img src="./static/images/dataset/plane_49.png" alt="Plane; Aggregated Images: 49">
+                    </div>
+                    <div class="item item-plane-73">
+                        <img src="./static/images/dataset/plane_73.png" alt="Plane; Aggregated Images: 73">
+                    </div>
+                    <div class="item item-plane-97">
+                        <img src="./static/images/dataset/plane_97.png" alt="Plane; Aggregated Images: 97">
+                    </div>
+                    <div class="item item-plane-121">
+                        <img src="./static/images/dataset/plane_121.png" alt="Plane; Aggregated Images: 121">
+                    </div>
+                    <div class="item item-plane-145">
+                        <img src="./static/images/dataset/plane_145.png" alt="Plane; Aggregated Images: 145">
+                    </div>
+                    <div class="item item-plane-169">
+                        <img src="./static/images/dataset/plane_169.png" alt="Plane; Aggregated Images: 169">
+                    </div>
+                    <div class="item item-plane-193">
+                        <img src="./static/images/dataset/plane_193.png" alt="Plane; Aggregated Images: 193">
+                    </div>
+                    <div class="item item-plane-217">
+                        <img src="./static/images/dataset/plane_217.png" alt="Plane; Aggregated Images: 217">
+                    </div>
+                    <div class="item item-plane-241">
+                        <img src="./static/images/dataset/plane_241.png" alt="Plane; Aggregated Images: 241">
+                    </div>
+                    <div class="item item-plane-249">
+                        <img src="./static/images/dataset/plane_249.png" alt="Plane; Aggregated Images: 249">
+                    </div>
+                </div>
+                <div id="fountain-carousel" class="dcarousel dataset-carousel">
+                    <div class="item item-water-1">
+                        <img src="./static/images/dataset/water_1.png" alt="Water Fountain; Aggregated Images: 1">
+                    </div>
+                    <div class="item item-water-25">
+                        <img src="./static/images/dataset/water_25.png" alt="Water Fountain; Aggregated Images: 25">
+                    </div>
+                    <div class="item item-water-49">
+                        <img src="./static/images/dataset/water_49.png" alt="Water Fountain; Aggregated Images: 49">
+                    </div>
+                    <div class="item item-water-73">
+                        <img src="./static/images/dataset/water_73.png" alt="Water Fountain; Aggregated Images: 73">
+                    </div>
+                    <div class="item item-water-97">
+                        <img src="./static/images/dataset/water_97.png" alt="Water Fountain; Aggregated Images: 97">
+                    </div>
+                    <div class="item item-water-121">
+                        <img src="./static/images/dataset/water_121.png" alt="Water Fountain; Aggregated Images: 121">
+                    </div>
+                    <div class="item item-water-145">
+                        <img src="./static/images/dataset/water_145.png" alt="Water Fountain; Aggregated Images: 145">
+                    </div>
+                    <div class="item item-water-169">
+                        <img src="./static/images/dataset/water_169.png" alt="Water Fountain; Aggregated Images: 169">
+                    </div>
+                    <div class="item item-water-193">
+                        <img src="./static/images/dataset/water_193.png" alt="Water Fountain; Aggregated Images: 193">
+                    </div>
+                    <div class="item item-water-217">
+                        <img src="./static/images/dataset/water_217.png" alt="Water Fountain; Aggregated Images: 217">
+                    </div>
+                    <div class="item item-water-241">
+                        <img src="./static/images/dataset/water_241.png" alt="Water Fountain; Aggregated Images: 241">
+                    </div>
+                    <div class="item item-water-249">
+                        <img src="./static/images/dataset/water_249.png" alt="Water Fountain; Aggregated Images: 249">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="hero-body">
+        <!-- Dataset. -->
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+                <h2 class="title is-3">Methodology</h2>
+                <h3 class="title is-3">...</h3>
+                <div class="content has-text-centered">
+	<div class="content has-text-justified">
+            <img src="static/images/results/Teaser.svg" alt="tba3">
+        </div>
+        <div class="content has-text-centered">
+          <h5>
+            Continuous Motion Amplitude Spectrum Captured in Our Novel Datasets, MIORe and VAR-MIORe
+          </h5>
+        </div>
+        
+        <div class="content has-text-justified">
+            <img src="static/images/results/RE-main.svg" alt="tba4">
+        </div>
+        <div class="content has-text-centered">
+          <h5>
+            Diverse Motion Patterns Captured within Different Scenarios in Our Proposed Datasets
+          </h5>
+          <h5>
+            Previous works have limited environment variations. Our datasets are collected in situations ranging from ones in which entities do not move, to the ones in which the subjects are extremely fast. We consider that by including such examples, the models could be better trained for the real-life. This in turn creates a necessity to find the common denominator for both static and highly dynamic targets.
+          </h5>
+        </div>
+        
+        <div class="content has-text-justified">
+            <img src="static/images/results/RE-motion_amplitude.svg" alt="tba5">
+        </div>
+        <div class="content has-text-centered">
+          <h5>
+            Motion Magnitude Distribution and Sharp-to-Blurry Frame Ratios
+          </h5>
+	<h5>
+          The MIORe dataset is our linking connection to related works. The underlying idea is to build the MIORe dataset in such a way that it is comparable to previous works. To do that, we choose to regularize the motion magnitude by aggregating an invesely proportional exposure time to the optical flow magnitude.
+	</h5>
+        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- AIM. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-4">Advances in Image Manipulation Workshop (<a target="_blank" rel="noopener noreferrer" href="https://www.cvlai.net/aim/2025/">AIM 2025</a>)</h2>
+        <h2 class="title is-4">High FPS Motion Deblurring Challenge (<a target="_blank" rel="noopener noreferrer" href="https://www.codabench.org/competitions/8448/">Track 1</a> and <a target="_blank" rel="noopener noreferrer" href="https://www.codabench.org/competitions/8431/">Track 2</a>)</h2>
+        
+        <h2 class="title is-4">Data from MIORe and VAR-MIORe has been shared to support the challenges at AIM 2025.</h2>
+        
+        <div class="content has-text-justified">
+            <img src="static/images/results/ICCVW XSIMD.svg" alt="Track1Results">
+        </div>
+        <div class="content has-text-centered">
+          <h5>
+            Qualitative Results of the First Challenge Track - Extreme Motion Deblurring Challenge held at ICCVW AIM 2025
+          </h5>
+        </div>
+        
+        <div class="content has-text-justified">
+            <img src="static/images/results/ICCVW SIMD.svg" alt="Track2Results">
+        </div>
+        <div class="content has-text-centered">
+          <h5>
+            Qualitative Results of the Second Challenge Track - Motion Deblurring Challenge held at ICCVW AIM 2025
+          </h5>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="content has-text-justified">
+          <p>
+            If you find our datasets, please cite us!
+          </p>
+        </div>
+      </div>
+    </div>
+      <pre>
+          <code>
+              @inproceedings{ciubotariu2025miore,
+  	      title	= {{MIOR}e \& {VAR-MIOR}e: Benchmarks to Push the Boundaries of Restoration},
+  	      author	= {George Ciubotariu and Zhuyun Zhou and Zongwei Wu and Radu Timofte},
+  	      booktitle	= {Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+  	      publisher	= {{IEEE} Computer Society},
+  	      year	= {2025}
+  	      }
+          </code>
+      </pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
